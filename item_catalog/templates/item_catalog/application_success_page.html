@@ -1,0 +1,131 @@
+{% extends "item_catalog/base.html" %}
+
+{% block header %}
+{% include "item_catalog/btn_edit_logout.html" %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<script type='text/javascript'>
+
+
+    function additem(){
+
+        $('#titleidmodal').val("");
+        $('#desciptionidmodal').val("");
+        var l = '/item_catalog/additem/';
+        $('#modal_form').attr('action', l);
+        $('#myModalNorm').modal("show");
+    }
+    </script>
+
+
+<div class="container">
+    <!-- Modal for the update pop up window. -->
+    <div class="modal fade" id="myModalNorm" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        Add Item Details
+                    </h4>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+
+                    <form id="modal_form" role="form" method="post" action="">
+                        <div class="form-group">
+                            <label for="titlemodal">Title</label>
+                            <input type="text" class="form-control"
+                                   id="titleidmodal" name='title' placeholder="Title"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="desciptionmodal">Description</label>
+                            <input type="text" class="form-control"
+                                   id="desciptionidmodal" name='description' placeholder="Description"/>
+                          </div>
+                           <div class="form-group">
+                            <select name="category" class="form-control">
+                                {% for category in categories %}
+                                <option value="{{category}}">{{category}}</option>
+                                {% endfor %}
+                            </select>
+
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    {% if user_name %}
+    <section>
+        Welcome back <b>{{ name }}</b>
+        <br/>
+    </section>
+
+    {% endif %}
+
+    <div class = "container">
+        <div class = "col-sm-2 col-md-2">
+
+                    <h2>Categories</h2>
+            <div id = "categorieswrapper" style="background-color: #f6f6f6">
+
+                {% for category in categories %}
+
+                        <li> {{category|capfirst}} </li>
+
+
+
+
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class = "col-sm-10 col-md-10">
+
+            {% if not category %}
+                        <h2 > Recent Items  (Total items: {{items|length}})  &nbsp;
+                            {% else %}
+                            <h2 > {{category|capfirst}}  (Total items: {{items|length}})  &nbsp;
+                                {% endif %}
+
+                {% if user_name %}
+                <a href="#" class="btn btn-info" onclick="additem()" role="button">Add New Item</a>
+                {% endif %}
+            </h2>
+            <div id = "itemswrapper" style="background-color: #f8f8f8">
+
+            {% for item in items %}
+
+                <a href = "/item_catalog/catalog/{{item.category}}/{{item.title}}" >{{item.title|capfirst}}
+                    {% if not category %}
+                    (<i>{{item.category|capfirst}}</i>)
+                    {% endif %}
+
+                    <br>
+
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

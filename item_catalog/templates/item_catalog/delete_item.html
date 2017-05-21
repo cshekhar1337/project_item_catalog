@@ -1,0 +1,49 @@
+{% extends "item_catalog/base.html" %}
+
+{% block header %}
+{% include "item_catalog/btn_edit_logout.html" %}
+
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    {% if messages %}
+    <div class='container'>
+        <div>
+            {% for message in messages %}
+            <div class="alert alert-danger">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% if user_name %}
+    <section>
+        Welcome back <b>{{ name }}</b>
+        <br/>
+    </section>
+    {% else %}
+
+    {% endif %}
+
+
+    <div class = "container">
+        <div class = "col-sm-4 col-md-4">
+
+
+        </div>
+
+        <div class = "col-sm-8 col-md-8">
+            <h1><b>Are you sure you want to delete {{item.title| capfirst}}</b></h1>
+
+            <a href="/item_catalog/catalog/{{item.category}}/{{item.title}}/delete/yes" class="btn btn-info"  role="button">Yes</a>
+            <a href="/item_catalog/" class="btn btn-info"  role="button">No</a>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

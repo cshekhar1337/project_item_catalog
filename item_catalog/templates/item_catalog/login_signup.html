@@ -1,0 +1,247 @@
+{% extends "item_catalog/base.html" %}
+{% block content %}
+
+<!-- I have used a template for signup and register page. This helped in developing interface fast. Reference http://bootsnipp.com/snippets/featured/login-and-register-tabbed-form -->
+
+
+
+<script>
+    $(function() {
+
+
+        $('#login-form-link').click(function(e) {
+            $("#login-form").delay(100).fadeIn(100);
+            $("#register-form").fadeOut(100);
+            $('#register-form-link').removeClass('active');
+            $(this).addClass('active');
+            e.preventDefault();
+        });
+        $('#register-form-link').click(function(e) {
+            $("#register-form").delay(100).fadeIn(100);
+            $("#login-form").fadeOut(100);
+            $('#login-form-link').removeClass('active');
+            $(this).addClass('active');
+            e.preventDefault();
+        });
+
+    });
+
+</script>
+
+
+
+
+
+<!--FACEBOOK SIGN IN -->
+<script>
+    function statusChangeCallback(response) {
+        console.log('statusChangeCallback');
+        console.log(response);
+        // The response object is returned with a status field that lets the
+        // app know the current login status of the person.
+        // Full docs on the response object can be found in the documentation
+        // for FB.getLoginStatus().
+        if (response.status === 'connected') {
+            // Logged into your app and Facebook.
+            testAPI();
+        } else {
+            // The person is not logged into your app or we are unable to tell.
+            document.getElementById('status').innerHTML = 'Please log ' +
+                    'into this app.';
+        }
+    }
+
+    // This function is called when someone finishes with the Login
+    // Button.  See the onlogin handler attached to it in the sample
+    // code below.
+    function checkLoginState() {
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+
+        });
+    }
+
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '700253380162318',
+            cookie     : true,  // enable cookies to allow the server to access
+                                // the session
+            xfbml      : true,  // parse social plugins on this page
+            version    : 'v2.9' // use graph api version 2.8
+        });
+
+        // Now that we've initialized the JavaScript SDK, we call
+        // FB.getLoginStatus().  This function gets the state of the
+        // person visiting this page and can return one of three states to
+        // the callback you provide.  They can be:
+        //
+        // 1. Logged into your app ('connected')
+        // 2. Logged into Facebook, but not your app ('not_authorized')
+        // 3. Not logged into Facebook and can't tell if they are logged into
+        //    your app or not.
+        //
+        // These three cases are handled in the callback function.
+
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
+
+    };
+
+    // Load the SDK asynchronously
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    // Here we run a very simple test of the Graph API after login is
+    // successful.  See statusChangeCallback() for when this call is made.
+    function testAPI() {
+        console.log('Welcome!  Fetching your information.... ');
+        var access_token = FB.getAuthResponse()['accessToken'];
+        FB.api('/me', function(response) {
+
+            document.getElementById('status').innerHTML =
+                    'Thanks for logging in, ' + response.name + '!';
+            $.ajax({
+                type: "POST",
+                url: '/item_catalog/fbconnect/',
+                data: {
+                    'access': access_token,
+                },
+                dataType: 'json',
+                success: function()
+                {
+
+                    window.location = window.location.origin + "/item_catalog/catalogview"
+                },
+
+            })
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ///////////////////////////////////////////////////
+
+</script>
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-login">
+                <div class="panel-heading">
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <a href="#" class="active" id="register-form-link">Register</a>
+
+                        </div>
+                        <div class="col-xs-6">
+                            <a href="#"  id="login-form-link">Login</a>
+
+                        </div>
+                    </div>
+
+                    <hr>
+
+
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form id="login-form" method="post" action="/item_catalog/catalogview/" role="form" enctype="multipart/form-data" style="display: none;">
+                                <div id="status"></div>
+                                    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+                                    </fb:login-button>
+                                <fb:logout-button  onclick = "FB.logout()">
+                                </fb:logout-button>
+
+
+
+                                <div class="form-group">
+                                    <input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address Registered" value="" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password" data-minlength="6" required>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-sm-6 col-sm-offset-3">
+                                            <input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-register" value="LOGIN">
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </form>
+                            <form id="register-form" method="post"  action="/item_catalog/register/"
+                                  role="form" enctype="multipart/form-data" onsubmit="validate_form()" style="display: block;">
+
+
+
+                                <div class="form-group">
+                                    <input type="text" name="name" id="name" tabindex="1" class="form-control" placeholder="Name" value="" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="user_name" id="user_name" tabindex="1" class="form-control" placeholder="User Name" value="" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password" data-minlength="6" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-sm-6 col-sm-offset-3">
+                                            <input type="submit" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="REGISTER">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+{% block extra_css %}
+<style>
+    body {
+    {% load static %}
+
+        background-image: url("{% static "images/wallpaper.png" %}");
+    }
+</style>
+{% endblock %}
