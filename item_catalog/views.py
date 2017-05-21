@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ObjectDoesNotExist
+
 try:
     import urllib.request as urllib2
 except ImportError:
@@ -40,8 +41,8 @@ def home(request):
         dict['user_name'] = request.session['user_name']
         dict['name'] = request.session['name']
 
-
     return catalog_view(request, **dict)
+
 
 def categoryitems(request, category):
     ''' returns items of a particular category'''
@@ -50,7 +51,7 @@ def categoryitems(request, category):
         return render_message(request, "Please enter valid values for the post")
     dict = {}
     try:
-        categoryid = Category.objects.get(name = category).category_id
+        categoryid = Category.objects.get(name=category).category_id
     except ObjectDoesNotExist:
         return render_message(request, "sorry.. some error occured")
     if 'user_name' in request.session and 'name' in request.session:
@@ -62,16 +63,9 @@ def categoryitems(request, category):
     return catalog_view(request, **dict)
 
 
-
 def catalog_view(request, **kwargs):
     '''utility function for category items'''
     return render(request, 'item_catalog/application_success_page.html', kwargs)
-
-
-
-
-
-
 
 
 def register(request):
@@ -125,9 +119,9 @@ def logout(request):
     messages.add_message(request, messages.SUCCESS, error_message)
     return render(request, 'item_catalog/login_signup.html')
 
+
 def signin(request):
     return render(request, 'item_catalog/login_signup.html')
-
 
 
 def login(request):
@@ -145,7 +139,8 @@ def login(request):
             categories = getCategories()
             items = getItems()
             return render(request, 'item_catalog/application_success_page.html',
-                          {'name': request.session['name'], 'user_name': request.session['user_name'], 'categories': categories, 'items': items})
+                          {'name': request.session['name'], 'user_name': request.session['user_name'],
+                           'categories': categories, 'items': items})
         else:
             messages.add_message(request, messages.ERROR, "Wrong email or password..")
             return render(request, 'item_catalog/login_signup.html')
@@ -153,14 +148,12 @@ def login(request):
     items = getItems()
     if 'user_name' in request.session and 'name' in request.session:
         return render(request, 'item_catalog/application_success_page.html',
-                      {'name': request.session['name'], 'user_name': request.session['user_name'], 'categories': categories, 'items': items})
+                      {'name': request.session['name'], 'user_name': request.session['user_name'],
+                       'categories': categories, 'items': items})
     else:
 
         return render(request, 'item_catalog/application_success_page.html',
                       {'categories': categories, 'items': items})
-
-
-
 
 
 def render_message(request, error_message):
@@ -171,18 +164,18 @@ def render_message(request, error_message):
     items = getItems()
     if 'user_name' in request.session and 'name' in request.session:
         return render(request, 'item_catalog/application_success_page.html',
-                      {'name': request.session['name'], 'user_name': request.session['user_name'], 'categories': categories, 'items': items})
+                      {'name': request.session['name'], 'user_name': request.session['user_name'],
+                       'categories': categories, 'items': items})
     else:
         return render(request, 'item_catalog/application_success_page.html',
                       {'categories': categories, 'items': items})
-
-
 
 
 def getCategories():
     ''' returns list of all categories'''
     categories = [e.name for e in Category.objects.all().order_by('name')]
     return categories
+
 
 def jsonprint(request):
     ''' returns json response'''
@@ -191,12 +184,11 @@ def jsonprint(request):
     return HttpResponse(json.dumps(report, indent=7), content_type="application/json")
 
 
-
 def getjsondata():
     resultList = []
     categories = Category.objects.all()
     for category in categories:
-        result ={}
+        result = {}
         result['id'] = category.category_id
         result['name'] = category.name
         result['item'] = getItems(category.category_id)
@@ -204,17 +196,16 @@ def getjsondata():
     return resultList
 
 
-
-def getItems(*args) :
+def getItems(*args):
     ''' get all the items if no parameter is passed. if category id is passed then get item details'''
     if len(args) == 0:
         items = Item.objects.all().order_by('created_at')
     if len(args) == 1:
-        items = Item.objects.filter(category_id__category_id = args[0])
+        items = Item.objects.filter(category_id__category_id=args[0])
 
     resultList = []
     for item in items:
-        result ={}
+        result = {}
         result['title'] = item.title
         if len(args) == 0:
             result['category'] = item.category_id.name
@@ -237,18 +228,18 @@ def edititem(request):
     description = (request.POST['description']).strip()
     category = (request.POST['category']).strip()
 
-    if checkArguments(title, description,category):
+    if checkArguments(title, description, category):
         return render_message(request, "Please enter valid values for the post")
     try:
-        category_row = Category.objects.get(name = category)
+        category_row = Category.objects.get(name=category)
     except ObjectDoesNotExist:
         return render_message(request, "sorry.. some error occurred")
     try:
-        user_row = User.objects.get(user_name = request.session['user_name'])
+        user_row = User.objects.get(user_name=request.session['user_name'])
     except ObjectDoesNotExist:
         return render_message(request, "sorry.. some error occurred")
     try:
-        obj = Item.objects.get(title = oldtitle,category_id = category_row, user_name = user_row )
+        obj = Item.objects.get(title=oldtitle, category_id=category_row, user_name=user_row)
     except ObjectDoesNotExist:
         return render_message(request, "sorry.. some error occurred")
 
@@ -259,8 +250,7 @@ def edititem(request):
     except ValueError:
         return render_message(request, "not valid ")
 
-    return render_message(request,"Item updated successfully")
-
+    return render_message(request, "Item updated successfully")
 
 
 def additem(request):
@@ -269,32 +259,24 @@ def additem(request):
     description = (request.POST['description']).strip()
     category = (request.POST['category']).strip()
 
-    if checkArguments(title, description,category):
+    if checkArguments(title, description, category):
         return render_message(request, "Please enter valid values for the post")
     try:
-        category_row = Category.objects.get(name = category)
+        category_row = Category.objects.get(name=category)
     except ObjectDoesNotExist:
         return render_message(request, "sorry.. some error occured")
     try:
-        user_row = User.objects.get(user_name = request.session['user_name'])
+        user_row = User.objects.get(user_name=request.session['user_name'])
     except ObjectDoesNotExist:
         return render_message(request, "sorry.. some error occured")
 
-
-
-
-
-    obj = Item(title= title, category_id = category_row, description= description, user_name = user_row )
+    obj = Item(title=title, category_id=category_row, description=description, user_name=user_row)
     try:
         obj.save()
     except ValueError:
         return render_message(request, "not valid ")
 
-
-
-
-
-    return render_message(request,"Item saved successfully")
+    return render_message(request, "Item saved successfully")
 
 
 def deleteitem(request, category, item):
@@ -307,16 +289,14 @@ def deleteitem(request, category, item):
     if category not in categories:
         return render_message(request, "Incorrect category entered")
 
-
     try:
-        obj = Item.objects.get(title= item, category_id__name = category)
+        obj = Item.objects.get(title=item, category_id__name=category)
     except ObjectDoesNotExist:
         return render_message(request, "sorry.. some error occured")
-    item ={}
+    item = {}
     item['category'] = category
     item['title'] = obj.title
-    return render(request,'item_catalog/delete_item.html', {'item': item})
-
+    return render(request, 'item_catalog/delete_item.html', {'item': item})
 
 
 def deleteitemconfirm(request, category, item):
@@ -329,16 +309,14 @@ def deleteitemconfirm(request, category, item):
     if category not in categories:
         return render_message(request, "Incorrect category entered")
 
-
     try:
-        obj = Item.objects.get(title= item, category_id__name = category)
+        obj = Item.objects.get(title=item, category_id__name=category)
     except ObjectDoesNotExist:
         return render_message(request, "sorry.. some error occured")
 
-
     obj.delete()
 
-    return render_message(request,"successfully deleted item")
+    return render_message(request, "successfully deleted item")
 
 
 def viewitem(request, category, item, function):
@@ -350,9 +328,8 @@ def viewitem(request, category, item, function):
     if category not in categories:
         return render_message(request, "Incorrect category entered")
 
-
     try:
-        obj = Item.objects.get(title= item, category_id__name = category)
+        obj = Item.objects.get(title=item, category_id__name=category)
     except ObjectDoesNotExist:
         return render_message(request, "sorry.. some error occured")
     item = {}
@@ -371,14 +348,15 @@ def viewitem(request, category, item, function):
         dict['name'] = request.session['name']
     dict['item'] = item
 
-    return render(request,'item_catalog/view_item.html',dict)
+    return render(request, 'item_catalog/view_item.html', dict)
+
 
 def fbconnect(request):
     ''' handles fbconnect '''
 
     access_token = request.POST['access']
 
-    #access_token = "EAAJ84HH6Mw4BAASJf6AaCi1YhT5ZBgewM4xanZBV4uyuZCOT5sgeK7qeZATySWiSv4IdKoFmDAPutQp6WPCxx2oPN6PQZCYbKeZC7AxYQcdP8e4XnMT2ZBuNM2aJFjZCyAnuLUS352AN9uALJZAMzofXYs36VxFMZCr2cGy4Sc0lTtNq9uLn6hAudnF9b10doADbcZD"
+    # access_token = "EAAJ84HH6Mw4BAASJf6AaCi1YhT5ZBgewM4xanZBV4uyuZCOT5sgeK7qeZATySWiSv4IdKoFmDAPutQp6WPCxx2oPN6PQZCYbKeZC7AxYQcdP8e4XnMT2ZBuNM2aJFjZCyAnuLUS352AN9uALJZAMzofXYs36VxFMZCr2cGy4Sc0lTtNq9uLn6hAudnF9b10doADbcZD"
     print ("access token received %s " % access_token)
     app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
         'web']['app_id']
@@ -391,26 +369,18 @@ def fbconnect(request):
     print("--------------\n")
     result = json.load(urllib2.urlopen(url))
 
-
-
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v2.9/me"
     # strip expire tag from access token
     token = result['access_token']
     print(token)
-    url ='https://graph.facebook.com/v2.9/me?fields=id%2Cname%2Cemail&access_token=' + token
-
+    url = 'https://graph.facebook.com/v2.9/me?fields=id%2Cname%2Cemail&access_token=' + token
 
     result = json.load(urllib2.urlopen(url))
 
     request.session['name'] = result["name"]
     request.session['user_name'] = result["email"]
     return JsonResponse({'success': 1})
-
-
-
-
-
 
 
 def checkArguments(*args):
@@ -421,17 +391,3 @@ def checkArguments(*args):
         if i is None or not i:
             check = True
     return check
-
-
-
-
-
-
-
-
-
-
-
-
-
-

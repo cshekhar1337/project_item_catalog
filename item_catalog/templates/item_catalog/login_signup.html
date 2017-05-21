@@ -43,6 +43,7 @@
         // for FB.getLoginStatus().
         if (response.status === 'connected') {
             // Logged into your app and Facebook.
+            document.getElementById('logoutbutton').innerHTML = ' <a href="#" class="btn btn-info" onclick="logout()" role="button">Logout Fb</a>'
             testAPI();
         } else {
             // The person is not logged into your app or we are unable to tell.
@@ -116,10 +117,17 @@
                 success: function()
                 {
 
-                    window.location = window.location.origin + "/item_catalog/catalogview"
+
                 },
 
             })
+        });
+    }
+
+    function logout(){
+        FB.logout(function(){
+            document.getElementById('status').innerHTML =
+                    'Log out from fb successful'
         });
     }
 
@@ -170,11 +178,11 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <form id="login-form" method="post" action="/item_catalog/catalogview/" role="form" enctype="multipart/form-data" style="display: none;">
-                                <div id="status"></div>
+                                <div id="status"></div><div id="logoutbutton"></div>
                                     <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
                                     </fb:login-button>
-                                <fb:logout-button  onclick = "FB.logout()">
-                                </fb:logout-button>
+
+
 
 
 

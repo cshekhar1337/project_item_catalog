@@ -11,7 +11,7 @@
 <script type='text/javascript'>
 
 
-    function additem(){
+    function additem() {
 
         $('#titleidmodal').val("");
         $('#desciptionidmodal').val("");
@@ -19,7 +19,7 @@
         $('#modal_form').attr('action', l);
         $('#myModalNorm').modal("show");
     }
-    </script>
+</script>
 
 
 <div class="container">
@@ -53,8 +53,8 @@
                             <label for="desciptionmodal">Description</label>
                             <input type="text" class="form-control"
                                    id="desciptionidmodal" name='description' placeholder="Description"/>
-                          </div>
-                           <div class="form-group">
+                        </div>
+                        <div class="form-group">
                             <select name="category" class="form-control">
                                 {% for category in categories %}
                                 <option value="{{category}}">{{category}}</option>
@@ -81,48 +81,52 @@
 
     {% endif %}
 
-    <div class = "container">
-        <div class = "col-sm-2 col-md-2">
+    <div class="container">
+        <div class="col-sm-2 col-md-2">
 
-                    <h2>Categories</h2>
-            <div id = "categorieswrapper" style="background-color: #f6f6f6">
+            <h2>Categories</h2>
+            <div id="categorieswrapper" style="background-color: #f6f6f6">
 
                 {% for category in categories %}
 
-                        <li> {{category|capfirst}} </li>
-
-
+                <li> {{category|capfirst}}</li>
 
 
                 {% endfor %}
             </div>
         </div>
 
-        <div class = "col-sm-10 col-md-10">
+        <div class="col-sm-10 col-md-10">
 
             {% if not category %}
-                        <h2 > Recent Items  (Total items: {{items|length}})  &nbsp;
-                            {% else %}
-                            <h2 > {{category|capfirst}}  (Total items: {{items|length}})  &nbsp;
-                                {% endif %}
-
-                {% if user_name %}
-                <a href="#" class="btn btn-info" onclick="additem()" role="button">Add New Item</a>
-                {% endif %}
-            </h2>
-            <div id = "itemswrapper" style="background-color: #f8f8f8">
-
-            {% for item in items %}
-
-                <a href = "/item_catalog/catalog/{{item.category}}/{{item.title}}" >{{item.title|capfirst}}
-                    {% if not category %}
-                    (<i>{{item.category|capfirst}}</i>)
+            <h2> Recent Items (Total items: {{items|length}}) &nbsp;
+                {% else %}
+                <h2> {{category|capfirst}} (Total items: {{items|length}}) &nbsp;
                     {% endif %}
 
-                    <br>
+                    {% if user_name %}
+                    <a href="#" class="btn btn-info" onclick="additem()" role="button">Add New Item</a>
+                    {% endif %}
+                </h2>
+                <div id="itemswrapper" style="background-color: #f8f8f8">
 
-                {% endfor %}
-            </div>
+                    {% for item in items %}
+
+                    {% if not category %}
+
+                    <a href="/item_catalog/catalog/ {{item.category}} /{{item.title}}">{{item.title|capfirst}}
+
+                        (<i>{{item.category|capfirst}}</i>)
+
+                        {% else %}
+                        <a href="/item_catalog/catalog/{{category}}/{{item.title}}">{{item.title|capfirst}}
+
+                            {% endif %}
+
+                            <br>
+
+                            {% endfor %}
+                </div>
 
         </div>
     </div>
